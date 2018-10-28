@@ -1,1 +1,1 @@
-# idealista-scraping
+# Práctica 1: Idealista scraping
