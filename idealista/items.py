@@ -19,4 +19,6 @@ class IdealistaItem(scrapy.Item):
     rooms = scrapy.Field()
     garage = scrapy.Field()
     floor = scrapy.Field()
+    image_urls = scrapy.Field()
+    images = scrapy.Field()
     

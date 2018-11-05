@@ -31,6 +31,7 @@ class IdealistacrawlerSpider(scrapy.Spider):
         floors = []
         descs = []
         garages = []
+        image_urls = []
         
         for info in response.xpath("//*[@class='item-info-container']"):
             links.append(str(''.join("https://www.idealista.com" + info.xpath('a/@href').extract().pop())))
@@ -44,8 +45,11 @@ class IdealistacrawlerSpider(scrapy.Spider):
             garages.append(1 if len(row.xpath("span[@class='item-parking']/text()").extract()) > 0 else 0)
             offs.append(0 if len(row.xpath("./*[@class='item-price-down icon-pricedown']/text()").extract()) < 1 else row.xpath("./*[@class='item-price-down icon-pricedown']/text()").extract().pop().replace('.','').strip().split(' ').pop(0))
         
-        results = zip(links, titles, prices, offs, m2, rooms, garages, floors)
+        for img in response.xpath("//*[@class='item-gallery']/div/img/@data-ondemand-img"):
+            image_urls.append([img.extract()])
+            
+        results = zip(links, titles, prices, offs, m2, rooms, garages, floors, image_urls)
         
         for flat in results:
-            item = IdealistaItem(date = datetime.now().strftime('%d-%m-%Y'), link = flat[0], title = flat[1], price = flat[2], off = flat[3], m2 = flat[4], rooms = flat[5], garage = flat[6], floor = flat[7])
+            item = IdealistaItem(date = datetime.now().strftime('%d-%m-%Y'), link = flat[0], title = flat[1], price = flat[2], off = flat[3], m2 = flat[4], rooms = flat[5], garage = flat[6], floor = flat[7], image_urls = flat[8])
             yield item
